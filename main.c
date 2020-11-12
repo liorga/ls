@@ -31,8 +31,8 @@ void printFileStats(struct stat fileStats){
 	
 	printf("\t%zu",fileStats.st_size);
 	
-	char date[10];
-	strftime(date, 20, "\t%d-%m-%y", localtime(&(fileStats.st_ctime)));
+	char date[20];
+	strftime(date, 30, "\t%b %Y %X", localtime(&(fileStats.st_mtime)));
 	printf("\t%s",date);
 	
 	//printf("\t%d", fileStats.st_ino);
