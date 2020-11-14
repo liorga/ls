@@ -1,18 +1,22 @@
-#include <stdio.h>
-#include <sys/stat.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <dirent.h>
-#include <pwd.h>
-#include <grp.h>
-#include <time.h>
-#include <stdlib.h>
 #include "my_ls.h"
 
-
 int main(int argc , char* argv[]) {
-	
-    ls_start(argv[1]);
+
+    switch (argc) {
+        case 1:{
+            ls_start(".");
+            break;
+        }
+        case 2:{
+            ls_start(argv[1]);
+            break;
+        }
+        default:{
+            printf("wrong num of arguments\n");
+            exit(1);
+        }
+    }
+    //ls_start(argv[1]);
 
 	return 0;
 }
@@ -23,7 +27,7 @@ void ls_start(char* file_path){
     struct dirent* dir_p;
     struct stat buff;
     chdir(file_path);
-    dp = opendir("..");
+    dp = opendir(".");
     char name[PATH_MAX];
     while((dir_p = readdir(dp)) != NULL){
         sprintf(name, "%s/%s", file_path, dir_p->d_name);
