@@ -16,7 +16,6 @@ int main(int argc , char* argv[]) {
             exit(1);
         }
     }
-    //ls_start(argv[1]);
 
 	return 0;
 }
@@ -80,7 +79,14 @@ void printFileStats(struct stat* fileStats){
     }
 
     char date[NAME_MAX];
-    strftime(date, NAME_MAX, " %b %d %Y\t", localtime(&(fileStats->st_mtime)));
+    time_t current_time;
+    time(&current_time);
+    struct tm* time = loc
+    if(difftime(current_time,()){
+        strftime(date, NAME_MAX, " %b %d %X\t", localtime(&(fileStats->st_mtime)));
+    } else{
+        strftime(date, NAME_MAX, " %b %d %Y\t", localtime(&(fileStats->st_mtime)));
+    }
     printf("\t%s",date);
 
 }
@@ -114,7 +120,15 @@ void printSymbolicLinkStats(struct stat* symLnk,char* dir_p){
 
 
     char date[NAME_MAX];
-    strftime(date, NAME_MAX, " %b %d %Y\t", localtime(&(symLnk->st_mtime)));
+    time_t current_time;
+    time(&current_time);
+    struct tm* current_time1 = localtime(&current_time);
+    struct tm* time = localtime(&(symLnk->st_mtime));
+    if(time->tm_mon > (current_time1->tm_mon - 6)){
+        strftime(date, NAME_MAX, " %b %d %X\t", localtime(&(symLnk->st_mtime)));
+    } else{
+        strftime(date, NAME_MAX, " %b %d %Y\t", localtime(&(symLnk->st_mtime)));
+    }
     printf("\t%s",date);
     char* buff;
     ssize_t bufsize ,nbytes;

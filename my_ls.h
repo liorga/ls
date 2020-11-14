@@ -24,7 +24,6 @@
 #define CYAN "\033[0;36m"
 
 
-
 void printSymbolicLinkStats(struct stat* symLnk,char* dir_p);
 void printFileStats(struct stat* fileStats);
 void ls_start(char* file_path);
