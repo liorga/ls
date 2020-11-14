@@ -15,10 +15,10 @@ int main(int argc , char* argv[]) {
 
         default:{
             for (int i = 1; i < argc ; ++i) {
-                printf(GREEN);
-                printf("%s\n",dirname(argv[i]));
-                printf(DEFAULT_COLOR);
                 ls_start(argv[i]);
+                printf(GREEN);
+                printf("directory name: %s\n\n",dirname(argv[i]));
+                printf(DEFAULT_COLOR);
                 printf("\n");
 
             }
@@ -89,9 +89,9 @@ void printFileStats(struct stat* fileStats){
     struct group *grp;
     struct passwd *pwd;
     grp = getgrgid(fileStats->st_gid);
-    printf( "\t%s", grp->gr_name);
+    printf( "%s", grp->gr_name);
     pwd = getpwuid(fileStats->st_uid);
-    printf(" %s\t\t", pwd->pw_name);
+    printf(" %s\t", pwd->pw_name);
 
 
     printf(" %zu",fileStats->st_size);
@@ -122,9 +122,9 @@ void printSymbolicLinkStats(struct stat* symLnk,char* dir_p){
     struct group *grp;
     struct passwd *pwd;
     grp = getgrgid(symLnk->st_gid);
-    printf( "\t%s", grp->gr_name);
+    printf( "%s", grp->gr_name);
     pwd = getpwuid(symLnk->st_uid);
-    printf(" %s\t\t", pwd->pw_name);
+    printf(" %s\t", pwd->pw_name);
 
     printf(" %zu",symLnk->st_size);
 
