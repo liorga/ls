@@ -25,30 +25,39 @@ void ls_start(char* file_path){
     DIR* dp;
     struct dirent* dir_p;
     struct stat buff;
-    chdir(file_path);
-    dp = opendir(".");
-    char name[PATH_MAX];
-    while((dir_p = readdir(dp)) != NULL){
-        sprintf(name, "%s/%s", file_path, dir_p->d_name);
-        lstat(dir_p->d_name,&buff);
-        if(S_ISLNK(buff.st_mode)) {
-            printSymbolicLinkStats(&buff,dir_p->d_name);
-        }
-        else {
-            printFileStats(&buff);
-            if(S_ISDIR(buff.st_mode)){
-                printf(GREEN);
-            }
-            if(S_ISREG(buff.st_mode)){
-                printf(RED);
-            }
-            printf("\t%s", dir_p->d_name);
-            printf(DEFAULT_COLOR);
-        }
-        printf("\n");
+    lstat(file_path,&buff);
+    if(S_ISREG(buff.st_mode)){
+        printFileStats(&buff);
+        printf("\t%s\n",file_path);
     }
+    else if (S_ISLNK(buff.st_mode)){
+        printSymbolicLinkStats(&buff,file_path);
+        printf("\n");
+    } else {
+        chdir(file_path);
+        dp = opendir(".");
+        char name[PATH_MAX];
+        while ((dir_p = readdir(dp)) != NULL) {
+            sprintf(name, "%s/%s", file_path, dir_p->d_name);
+            lstat(dir_p->d_name, &buff);
+            if (S_ISLNK(buff.st_mode)) {
+                printSymbolicLinkStats(&buff, dir_p->d_name);
+            } else {
+                printFileStats(&buff);
+                if (S_ISDIR(buff.st_mode)) {
+                    printf(GREEN);
+                }
+                if (S_ISREG(buff.st_mode)) {
+                    printf(RED);
+                }
+                printf("\t%s", dir_p->d_name);
+                printf(DEFAULT_COLOR);
+            }
+            printf("\n");
+        }
 
-    closedir(dp);
+        closedir(dp);
+    }
 }
 
 void printFileStats(struct stat* fileStats){
@@ -63,7 +72,7 @@ void printFileStats(struct stat* fileStats){
     printf( (fileStats->st_mode & S_IWOTH) ? "w" : "-");
     printf( (fileStats->st_mode & S_IXOTH) ? "x\t" : "-\t");
 
-    printf("%d\t", fileStats->st_nlink);
+    printf("%lu\t", fileStats->st_nlink);
 
     struct group *grp;
     struct passwd *pwd;
@@ -74,19 +83,11 @@ void printFileStats(struct stat* fileStats){
 
 
     printf(" %zu",fileStats->st_size);
-    if(fileStats->st_size < ONE_HUNDRED){
-        printf("\t");
-    }
 
-    char date[NAME_MAX];
-    time_t current_time;
-    time(&current_time);
-    struct tm* time = loc
-    if(difftime(current_time,()){
-        strftime(date, NAME_MAX, " %b %d %X\t", localtime(&(fileStats->st_mtime)));
-    } else{
-        strftime(date, NAME_MAX, " %b %d %Y\t", localtime(&(fileStats->st_mtime)));
-    }
+
+    char date[NAME_];
+
+    strftime(date, NAME_, " %b %d %Y\t", localtime(&(fileStats->st_mtime)));
     printf("\t%s",date);
 
 }
@@ -103,7 +104,7 @@ void printSymbolicLinkStats(struct stat* symLnk,char* dir_p){
     printf( (symLnk->st_mode & S_IWOTH) ? "w" : "-");
     printf( (symLnk->st_mode & S_IXOTH) ? "x\t" : "-\t");
 
-    printf("%d\t", symLnk->st_nlink);
+    printf("%lu\t", symLnk->st_nlink);
 
 
     struct group *grp;
@@ -114,21 +115,11 @@ void printSymbolicLinkStats(struct stat* symLnk,char* dir_p){
     printf(" %s\t\t", pwd->pw_name);
 
     printf(" %zu",symLnk->st_size);
-    if(symLnk->st_size < ONE_HUNDRED){
-        printf("\t");
-    }
 
 
-    char date[NAME_MAX];
-    time_t current_time;
-    time(&current_time);
-    struct tm* current_time1 = localtime(&current_time);
-    struct tm* time = localtime(&(symLnk->st_mtime));
-    if(time->tm_mon > (current_time1->tm_mon - 6)){
-        strftime(date, NAME_MAX, " %b %d %X\t", localtime(&(symLnk->st_mtime)));
-    } else{
-        strftime(date, NAME_MAX, " %b %d %Y\t", localtime(&(symLnk->st_mtime)));
-    }
+    char date[NAME_];
+    strftime(date, NAME_, " %b %d %Y\t", localtime(&(symLnk->st_mtime)));
+
     printf("\t%s",date);
     char* buff;
     ssize_t bufsize ,nbytes;

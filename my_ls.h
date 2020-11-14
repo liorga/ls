@@ -15,7 +15,7 @@
 #include <time.h>
 #include <stdlib.h>
 
-#define NAME_MAX 256
+#define NAME_ 256
 #define ONE_HUNDRED 100
 
 #define GREEN "\033[0;32m"
