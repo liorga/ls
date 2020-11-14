@@ -47,7 +47,9 @@ void printSymbolicLinkStats(struct stat* symLnk,char* dir_p){
 	}
 	buff = malloc(bufsize);
 	nbytes = readlink(dir_p,buff,bufsize);
+	printf("\033[0;34m");
 	printf("\t%s -> %.*s", dir_p, (int) nbytes, buff);
+	printf("\033[0m");
 	free(buff);
 }
 
@@ -81,9 +83,7 @@ void printFileStats(struct stat* fileStats){
 	char date[20];
 	strftime(date, 30, " %b %d %Y\t", localtime(&(fileStats->st_mtime)));
 	printf("\t%s",date);
-	
-	//printf("\t%d", fileStats.st_ino);
-	//printf(" The file %s a symbolic link ", (S_ISLNK(fileStats->st_mode)) ? "is" : "not");
+
 }
 
 int main(int argc , char* argv[]) {
@@ -93,22 +93,27 @@ int main(int argc , char* argv[]) {
 	struct stat buff;
 	chdir(argv[1]);
 	dp = opendir("..");
-	char name[512];
+	char name[PATH_MAX];
 	while((dir_p = readdir(dp)) != NULL){
 		sprintf(name, "%s/%s", argv[1], dir_p->d_name);
 		lstat(dir_p->d_name,&buff);
-		//printf(" The file %s a symbolic link ", (S_ISLNK(buff.st_mode)) ? "is" : "not");
 		if(S_ISLNK(buff.st_mode)) {
 			printSymbolicLinkStats(&buff,dir_p->d_name);
 		}
 		else {
 			printFileStats(&buff);
+			if(S_ISDIR(buff.st_mode)){
+			    printf("\033[0;32m");
+			}
+			if(S_ISREG(buff.st_mode)){
+                printf("\033[0;31m");
+			}
 			printf("\t%s", dir_p->d_name);
+			printf("\033[0m");
 		}
 		printf("\n");
 	}
 	
 	closedir(dp);
-	//printf("%i %s %P\n",buff.st_ino,buff.st_size,buff.st_mode);
 	return 0;
 }
