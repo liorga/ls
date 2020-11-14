@@ -1,3 +1,4 @@
+#include <libgen.h>
 #include "my_ls.h"
 
 int main(int argc , char* argv[]) {
@@ -11,10 +12,19 @@ int main(int argc , char* argv[]) {
             ls_start(argv[1]);
             break;
         }
+
         default:{
-            printf("wrong num of arguments\n");
-            exit(1);
+            for (int i = 1; i < argc ; ++i) {
+                printf(GREEN);
+                printf("%s\n",dirname(argv[i]));
+                printf(DEFAULT_COLOR);
+                ls_start(argv[i]);
+                printf("\n");
+
+            }
+            break;
         }
+
     }
 
 	return 0;
@@ -23,12 +33,15 @@ int main(int argc , char* argv[]) {
 
 void ls_start(char* file_path){
     DIR* dp;
+    char name[PATH_MAX];
     struct dirent* dir_p;
     struct stat buff;
+
     lstat(file_path,&buff);
+
     if(S_ISREG(buff.st_mode)){
         printFileStats(&buff);
-        printf("\t%s\n",file_path);
+        printf("%s\n",basename(file_path));
     }
     else if (S_ISLNK(buff.st_mode)){
         printSymbolicLinkStats(&buff,file_path);
@@ -36,7 +49,6 @@ void ls_start(char* file_path){
     } else {
         chdir(file_path);
         dp = opendir(".");
-        char name[PATH_MAX];
         while ((dir_p = readdir(dp)) != NULL) {
             sprintf(name, "%s/%s", file_path, dir_p->d_name);
             lstat(dir_p->d_name, &buff);
@@ -130,7 +142,7 @@ void printSymbolicLinkStats(struct stat* symLnk,char* dir_p){
     buff = malloc(bufsize);
     nbytes = readlink(dir_p,buff,bufsize);
     printf(CYAN);
-    printf("\t%s -> %.*s", dir_p, (int) nbytes, buff);
+    printf("\t%s -> %.*s", basename(dir_p), (int) nbytes, buff);
     printf(DEFAULT_COLOR);
     free(buff);
 }
