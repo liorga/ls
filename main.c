@@ -9,7 +9,7 @@
 #include <stdlib.h>
 
 void printSymbolicLinkStats(struct stat* symLnk,char* dir_p){
-	printf( (S_ISDIR(symLnk->st_mode)) ? "d" : "-");
+	printf( (S_ISLNK(symLnk->st_mode)) ? "l" : "-");
 	printf( (symLnk->st_mode & S_IRUSR) ? "r" : "-");
 	printf( (symLnk->st_mode & S_IWUSR) ? "w" : "-");
 	printf( (symLnk->st_mode & S_IXUSR) ? "x" : "-");
@@ -18,22 +18,26 @@ void printSymbolicLinkStats(struct stat* symLnk,char* dir_p){
 	printf( (symLnk->st_mode & S_IXGRP) ? "x" : "-");
 	printf( (symLnk->st_mode & S_IROTH) ? "r" : "-");
 	printf( (symLnk->st_mode & S_IWOTH) ? "w" : "-");
-	printf( (symLnk->st_mode & S_IXOTH) ? "x" : "-");
+	printf( (symLnk->st_mode & S_IXOTH) ? "x\t" : "-\t");
 	
-	printf("\t%d", symLnk->st_nlink);
-	
+	printf("%d\t", symLnk->st_nlink);
+
+
 	struct group *grp;
 	struct passwd *pwd;
 	grp = getgrgid(symLnk->st_gid);
 	printf( "\t%s", grp->gr_name);
 	pwd = getpwuid(symLnk->st_uid);
-	printf("\t%s", pwd->pw_name);
-	
-	
-	printf("\t%zu",symLnk->st_size);
-	
+	printf(" %s\t\t", pwd->pw_name);
+
+	printf(" %zu",symLnk->st_size);
+    if(symLnk->st_size < 100){
+        printf("\t");
+    }
+
+
 	char date[20];
-	strftime(date, 30, "\t%b %Y %X\t", localtime(&(symLnk->st_mtime)));
+	strftime(date, 30, " %b %d %Y\t", localtime(&(symLnk->st_mtime)));
 	printf("\t%s",date);
 	char* buff;
 	ssize_t bufsize ,nbytes;
@@ -57,22 +61,25 @@ void printFileStats(struct stat* fileStats){
 	printf( (fileStats->st_mode & S_IXGRP) ? "x" : "-");
 	printf( (fileStats->st_mode & S_IROTH) ? "r" : "-");
 	printf( (fileStats->st_mode & S_IWOTH) ? "w" : "-");
-	printf( (fileStats->st_mode & S_IXOTH) ? "x" : "-");
+	printf( (fileStats->st_mode & S_IXOTH) ? "x\t" : "-\t");
 	
-	printf("\t%d", fileStats->st_nlink);
-	
+	printf("%d\t", fileStats->st_nlink);
+
 	struct group *grp;
 	struct passwd *pwd;
 	grp = getgrgid(fileStats->st_gid);
 	printf( "\t%s", grp->gr_name);
 	pwd = getpwuid(fileStats->st_uid);
-	printf("\t%s", pwd->pw_name);
+	printf(" %s\t\t", pwd->pw_name);
+
 	
-	
-	printf("\t%zu",fileStats->st_size);
+	printf(" %zu",fileStats->st_size);
+	if(fileStats->st_size < 100){
+	    printf("\t");
+	}
 	
 	char date[20];
-	strftime(date, 30, "\t%b %Y %X\t", localtime(&(fileStats->st_mtime)));
+	strftime(date, 30, " %b %d %Y\t", localtime(&(fileStats->st_mtime)));
 	printf("\t%s",date);
 	
 	//printf("\t%d", fileStats.st_ino);
