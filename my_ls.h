@@ -14,9 +14,9 @@
 #include <grp.h>
 #include <time.h>
 #include <stdlib.h>
+#include <libgen.h>
 
 #define NAME_ 256
-#define ONE_HUNDRED 100
 
 #define GREEN "\033[0;32m"
 #define RED "\033[0;31m"
